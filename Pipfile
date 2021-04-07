@@ -1,0 +1,16 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+kivy = "*"
+openrouteservice = "*"
+openpyxl = "*"
+python-dateutil = "*"
+
+[dev-packages]
+buildozer = "*"
+
+[requires]
+python_version = "3.8"

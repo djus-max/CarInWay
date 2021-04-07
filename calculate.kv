@@ -1,0 +1,977 @@
+# kivy.require('1.11.1')
+#:import C kivy.utils.get_color_from_hex
+
+<HeaderWidget>
+    size_hint: (None, None)
+    size_hint: (1, 0.1)
+    padding: [0, 10, 0, 0]
+
+    BoxLayout:
+        BoxLayout:
+            size_hint: None, None
+            size_hint: 1 , 1
+
+            AnchorLayout:
+                anchor_x: 'left'
+                padding: [ 5, 5, 0, 0]
+
+                BackButton:
+                    source: './data/img/back.png'
+                    id: back_button
+                    size_hint_x: 0.4
+                    on_release: root.parent.parent.remove_screen_manager()
+
+
+        AnchorLayout:
+            anchor_x: 'right'
+            padding:  [0, 5, 5, 0]
+
+            HomeBackButton:
+                source: './data/img/home.png'
+                background_color: 1,0,0,1
+                background_normal: ''
+                no_cashe: False
+                id: home_back
+                size_hint: .3, 0.9
+                on_release: root.parent.parent.home_screen_manager()
+
+
+
+<SecondScreen>:
+    id: SecondScreen
+    name: 'SecondScreen'
+    disabled: False
+
+    canvas:
+        Color:
+            rgba: 0, 0, 1, .5
+        Rectangle:    
+            size: self.size
+            pos: self.pos 
+
+
+<FirstScreen>:
+    canvas:
+        Color:
+            rgba: 0, 0, 1, .5
+        Rectangle:    
+            size: self.size
+            pos: self.pos 
+
+
+
+<Calendar1>:
+    size_hint: (None, None)
+    BoxLayout:
+        CalendarWidget
+
+
+<widget_one>:
+    id: widget_one
+    padding: [ 5, 0, 5, 0]
+    size_hint: (None, None)
+    size_hint: 1, 0.1
+
+    BoxLayout:
+        orientation: 'vertical'
+        rows: 3
+        AnchorLayout:
+            anchor_x: 'center'
+            anchor_y: 'top'
+            Label:
+                size_hint: .5, -1.5
+                id: now_data
+
+        BoxLayout:
+            size_hint: None, None
+            size_hint: 1 , 1
+            AnchorLayout:
+                anchor_x: 'center'
+                anchor_y: 'top'
+                size_hint: .9, 2
+                AddButton:
+                    source: './data/img/add.png'
+                    size_hint_x: 0.4
+                    text: 'добавить'
+                    on_press: root.parent.add_row()
+
+            AnchorLayout:
+                anchor_x: 'center'
+                anchor_y: 'top'
+                size_hint: .9, 1.9
+                DeletetButton:
+                    source: './data/img/delete.png'
+                    size_hint_x: 0.3
+                    on_press: root.parent.delete_row()
+
+        GridLayout:
+            cols: 4
+            Label:
+                text: "Адрес"
+                text_size: self.size
+                halign: 'center'
+
+                size_hint_x: None
+                size_hint_x: 0.7
+
+            Label:
+                text: "км"
+                text_size: self.size
+                halign: 'center'
+                valign: 'middle'
+                size_hint_x: None
+                size_hint_x: 0.2
+
+            Label:
+                text: ""
+                size_hint_x: None
+                size_hint_x: 0.03
+
+
+
+<FooterWidget>:
+    id: footer_widget
+    size_hint: (None, None)
+
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint: 1, 1.5
+        
+        BoxLayout:
+            BoxLayout:
+                Label:
+                    text: 'Всего пройденно:'
+
+            AnchorLayout:
+                anchor_x: 'left'
+                Label:
+                    id: total
+                    text: ''
+                    size_hint_x: 0.2
+
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: None, None
+            size_hint: 1, 2
+
+            BoxLayout:
+                size_hint: 0.5, 1
+                AnchorLayout:
+                    anchor_x: 'left'
+                    padding:  [20, 0, 0, 0]
+                    SaveDateButton:
+                        source: './data/img/save_2.png'
+                        id: save_button
+                        text: 'сохранить'
+                        size_hint: 0.5, 1
+                        opacity: 0                 
+                        disabled: True                
+                        on_press: root.parent.save_to_sqlite()
+
+            BoxLayout:
+                size_hint: 0.5, 1
+                AnchorLayout:
+                    anchor_x: 'right'
+                    anchor_y: 'bottom'
+                    size_hint_y: 1.5
+                    padding:  [0, 0, 20, 0]
+                    NavigationButton:
+                        source: './data/img/go.png'
+                        id: calculate_button
+                        text: 'расcчитать'
+                        size_hint: 0.4, 1
+                        on_press: root.parent.calculate_distance(self , root)
+
+
+<MyTextInput@TextInput>:
+    id: MyTextInput
+    font_size: '13sp'
+    background_color: 0,0,0,0
+    canvas.before:
+        Color:
+            rgba: root.canvas_color_text       # цвет текста
+    canvas.after:
+        Color:
+            rgba: root.canvas_color_radius   # цвет по радиусу
+        Ellipse:
+            angle_start:180
+            angle_end:360
+            pos:(self.pos[0] - self.size[1]/2.0, self.pos[1])
+            size: (self.size[1], self.size[1])
+        Ellipse:
+            angle_start:360
+            angle_end:540
+            pos: (self.size[0] + self.pos[0] - self.size[1]/2.0, self.pos[1])
+            size: (self.size[1], self.size[1])
+        Color:
+            rgba: 1, 0, 0, 0
+        Line:
+            points: self.pos[0] , self.pos[1], self.pos[0] + self.size[0], self.pos[1]
+        Line:
+            points: self.pos[0], self.pos[1] + self.size[1], self.pos[0] + self.size[0], self.pos[1] + self.size[1]
+        Line:
+            ellipse: self.pos[0] - self.size[1]/2.0, self.pos[1], self.size[1], self.size[1], 180, 360
+        Line:
+            ellipse: self.size[0] + self.pos[0] - self.size[1]/2.0, self.pos[1], self.size[1], self.size[1], 360, 540
+
+
+<widget_two>:
+    size_hint: (None, None)
+
+    BoxLayout:
+        orientation:'horizontal'
+        size: root.width, 1
+
+        BoxLayout:
+            size_hint_x: None
+            size_hint_x: 0.05
+
+        BoxLayout:
+            id: lll
+            size_hint_x: None
+            size_hint_x: 0.7
+
+            canvas.before:
+
+                Color:
+                    id: ll
+                    rgba: root.canvas_color_holst_address_street  # внутренний цвет
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            MyTextInput:
+                background_color: (0,0,0,0)
+                id: address_street
+                text: ""                        #! FIX
+                font_size: '13sp'
+                hint_text : 'Введите улицу'
+                text_size: self.size
+                halign: 'center'
+                valign: 'middle'
+
+                multiline: False
+                is_focusable: True
+                on_text: root.validate(self, self.text)
+                on_focus: root.focus(self, self.text)
+                background_color: 0,0,0,0
+
+        BoxLayout:
+            size_hint_x: None
+            size_hint_x: 0.07
+
+
+        BoxLayout:
+            size_hint_x: None
+            size_hint_x: 0.1
+            padding_left: '5sp'
+            
+
+            Label:
+                id: distance
+                text: ""              
+                background_normal: ''
+                background_color: (0,1,0,0)
+
+
+        BoxLayout:
+            size_hint_x: None
+            size_hint_x: 0.1
+
+            UpdateButton:
+                source: './data/img/refresh.png'
+                id: add_row
+                font_size: 30
+                background_normal: ''
+                background_color: (0,1,0,1)
+                on_press: root.change_row(self), root.parent.parent.parent.change_total_distance()
+
+
+<HomeScreen>:
+    name: 'HomeScreen'
+    id: HomeScreen
+    canvas:
+        Color:
+            rgba: 0, 0, 1, .5
+        Rectangle:    
+            size: self.size
+            pos: self.pos
+
+
+
+<widget_three>:
+    size_hint: (None, None)
+    padding: [0, 0, 0, 0]
+    BoxLayout:
+        orientation: 'vertical'
+
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: '15sp'
+            padding: [0, 0, '25sp', 0]
+            size_hint_y: None
+            size_hint_y:  0.3
+
+            BoxLayout:
+                size_hint_y: None
+                size_hint_y: 0.1
+
+                AnchorLayout:
+                    anchor_x: 'center'
+                    anchor_y: 'top'
+
+                    Label:
+                        text: 'Ваши данные:'
+                    
+
+            BoxLayout:
+                size_hint_y: None
+                height: '30sp'
+
+                Label:
+                    text: 'Ф.И.О'
+                    font_size: '15sp'
+                    size_hint_x: 0.4
+
+                BoxLayout:
+                    size_hint_x: None
+                    size_hint_x: 0.65
+
+                    canvas.before:
+                        Color:
+                            rgba: root.canvas_color_holst_family  # внутренний цвет
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                    MyTextInput:
+                        id: family
+                        text: ''
+                        font_size: '15sp'
+                        hint_text : 'Иванов А.А'
+                        hint_text_color: 1,1,1,1
+                        background_color: (0,0,0,0)
+                        halign: 'center'
+                        on_focus: root.focus(self, self.text )
+                        on_text: root.validate(self, self.text )
+
+            BoxLayout:
+                size_hint_y: None
+                height: '30sp'
+                
+                Label:
+                    text: 'Марка машины'
+                    font_size: '15sp'
+                    size_hint_x: 0.4
+
+                BoxLayout:
+                    size_hint_x: None
+                    size_hint_x: 0.65
+
+                    canvas.before:
+                        Color:
+                            rgba: root.canvas_color_holst_car  # внутренний цвет
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                    MyTextInput:
+                        id: car
+                        text: ''
+                        font_size: '15sp'
+                        hint_text : 'BMW X5'
+                        hint_text_color: 1,1,1,1
+                        background_color: (0,0,0,0)
+                        halign: 'center'
+                        on_focus: root.focus(self, self.text )
+                        on_text: root.validate(self, self.text )
+                
+
+            BoxLayout:
+                size_hint_y: None
+                height: '30sp'
+
+
+                Label:
+                    text: 'Гос номер'
+                    font_size: '15sp'
+                    size_hint_x: 0.4
+                    
+
+                BoxLayout:
+                    size_hint_x: None
+                    size_hint_x: 0.65
+
+                    canvas.before:
+                        Color:
+                            rgba: root.canvas_color_holst_number_car  # внутренний цвет
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                    MyTextInput:
+                        id: number_car
+                        text: ''
+                        font_size: '15sp'
+                        hint_text : 'Р777РР30'
+                        hint_text_color: 1,1,1,1
+                        background_color: (0,0,0,0)
+                        halign: 'center'
+                        on_focus: root.focus(self, self.text )
+                        on_text: root.validate(self, self.text )
+
+
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: 10
+            size_hint_y: None
+            size_hint_y: 0.3
+
+            BoxLayout:
+                
+                AnchorLayout
+                    anchor_x: 'center'
+                    anchor_y: 'top'
+
+                    Label:
+                        text: 'Выберите даты:'
+                        font_size: '14sp'
+                        background_color: (0, 0, 1, .2)
+
+            
+            BoxLayout:
+                padding: ['30sp', 0, '30sp', 0]
+                spacing: '10sp'
+                size_hint_y: None
+                height: '30sp'
+                size_hint_x: None
+                size_hint_x: 1
+
+                BoxLayout:
+                    canvas.before:
+                        Color:
+                            rgba: (0, 0, 1, 1)  # внутренний цвет
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                    DatePicker:
+                        id: date_begin
+                        text_size: self.size
+                        halign: 'center'
+                        valign: 'middle'
+                        font_size: '13sp'
+                        background_color: (0, 0, 0, 0)
+
+                        canvas.before:
+                            Color:
+                                rgba: [1,1,1,1]  # C('#ffffff')           # цвет курсора
+                        canvas.after:
+                            Color:
+                                rgb: (0, 0, 1, 1)
+                            Ellipse:
+                                angle_start:180
+                                angle_end:360
+                                pos:(self.pos[0] - self.size[1]/2.0, self.pos[1])
+                                size: (self.size[1], self.size[1])
+                            Ellipse:
+                                angle_start:360
+                                angle_end:540
+                                pos: (self.size[0] + self.pos[0] - self.size[1]/2.0, self.pos[1])
+                                size: (self.size[1], self.size[1])
+                            Color:
+                                rgba: (0, 0, 1, 1)
+
+                            Line:
+                                points: self.pos[0] , self.pos[1], self.pos[0] + self.size[0], self.pos[1]
+                            Line:
+                                points: self.pos[0], self.pos[1] + self.size[1], self.pos[0] + self.size[0], self.pos[1] + self.size[1]
+                            Line:
+                                ellipse: self.pos[0] - self.size[1]/2.0, self.pos[1], self.size[1], self.size[1], 180, 360
+                            Line:
+                                ellipse: self.size[0] + self.pos[0] - self.size[1]/2.0, self.pos[1], self.size[1], self.size[1], 360, 540
+
+
+                AnchorLayout:
+                    anchor_x: 'center'
+                    anchor_y: 'top'
+                    size_hint_x: 0.3
+                    Label:
+                        text: '-'
+
+                BoxLayout:
+                    size_hint_x: None
+                    size_hint_x: 1
+
+                    canvas.before:
+                        Color:
+                            rgba: (0, 0, 1, 1)  # внутренний цвет
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                    DatePicker:
+                        id: date_end
+                        text_size: self.size
+                        background_active: 'textinput_active'
+                        halign: 'center'
+                        valign: 'middle'
+                        font_size: '13sp'
+                        background_color: (0, 0, 0, 0)
+
+                        canvas.before:
+                            Color:
+                                rgba: [1,1,1,1]  # C('#ffffff')           # цвет курсора
+                        canvas.after:
+                            Color:
+                                rgb: (0, 0, 1, 1)
+                            Ellipse:
+                                angle_start:180
+                                angle_end:360
+                                pos:(self.pos[0] - self.size[1]/2.0, self.pos[1])
+                                size: (self.size[1], self.size[1])
+                            Ellipse:
+                                angle_start:360
+                                angle_end:540
+                                pos: (self.size[0] + self.pos[0] - self.size[1]/2.0, self.pos[1])
+                                size: (self.size[1], self.size[1])
+                            Color:
+                                rgba: (0, 0, 1, 1)
+
+                            Line:
+                                points: self.pos[0] , self.pos[1], self.pos[0] + self.size[0], self.pos[1]
+                            Line:
+                                points: self.pos[0], self.pos[1] + self.size[1], self.pos[0] + self.size[0], self.pos[1] + self.size[1]
+                            Line:
+                                ellipse: self.pos[0] - self.size[1]/2.0, self.pos[1], self.size[1], self.size[1], 180, 360
+                            Line:
+                                ellipse: self.size[0] + self.pos[0] - self.size[1]/2.0, self.pos[1], self.size[1], self.size[1], 360, 540
+
+            BoxLayout:
+                size_hint_y: None
+                size_hint_y: 0.6
+
+                Label:
+                    text: 'Всего пройденно:'
+                    font_size: '15sp'
+
+                AnchorLayout:
+                    anchor_x: 'left'
+                    anchor_y: 'top'
+
+                    Label:
+                        id: total
+                        text : ''              
+                        size_hint_x: 0.5
+
+
+        BoxLayout:
+            padding: [20, 0, 0, 20]
+            size_hint_y: None
+            size_hint_y: 0.1
+        
+            AnchorLayout:
+                anchor_x: 'left'
+                anchor_y: 'top'
+                size_hint_y: None
+                height: '30sp'
+
+                BoxLayout:
+                    size_hint_x: None
+                    size_hint_x: 0.25
+
+                    SaveButton:
+                        id: save_
+                        source: './data/img/save_2.png'
+                        on_release: root.parent.show_save()
+
+
+<SaveDialog>:
+    text_input: text_input
+    canvas:
+        Color:
+            rgba: 0, 0, 1, .8
+        Rectangle:    
+            size: self.size
+            pos: self.pos 
+
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        spacing: 5
+        padding: 5, 5, 5, 5
+
+        FileChooserListView:
+            id: filechooser
+            rootpath: ""                  # TODO  путь к открыванию
+            on_selection: text_input.text = self.selection and self.selection[0] or ''
+
+        BoxLayout:
+            padding: 30,0, 30, 0
+            size_hint_y: None
+            height: '30sp'
+            AnchorLayout:
+                anchor_x: 'center'
+
+                canvas.before:
+                    Color:
+                        rgba: root.color_canvas_text_input
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+                TextInput:
+                    size_hint_x: None
+                    size_hint_x: 1
+                    id: text_input
+                    hint_text: 'НАЗВАНИЕ_ФАЙЛА'
+                    hint_text_color: 0,0,0,1
+                    halign: 'center'
+                    valign: 'middle'
+                    font_size: '15sp'
+                    multiline: False
+                    background_color: (0,1,1,0)
+                    on_text: root.validate( self, self.text)
+
+                    canvas.before:
+                        Color:
+                            rgba: root.color_text_input     # цвет текста
+                    canvas.after:
+                        Color:
+                            rgba: root.color_canvas_text_input   # цвет по радиусу
+                        Ellipse:
+                            angle_start:180
+                            angle_end:360
+                            pos:(self.pos[0] - self.size[1]/2.0, self.pos[1])
+                            size: (self.size[1], self.size[1])
+                        Ellipse:
+                            angle_start:360
+                            angle_end:540
+                            pos: (self.size[0] + self.pos[0] - self.size[1]/2.0, self.pos[1])
+                            size: (self.size[1], self.size[1])
+                        Color:
+                            rgba: root.color_canvas_text_input
+                        Line:
+                            points: self.pos[0] , self.pos[1], self.pos[0] + self.size[0], self.pos[1]
+                        Line:
+                            points: self.pos[0], self.pos[1] + self.size[1], self.pos[0] + self.size[0], self.pos[1] + self.size[1]
+                        Line:
+                            ellipse: self.pos[0] - self.size[1]/2.0, self.pos[1], self.size[1], self.size[1], 180, 360
+                        Line:
+                            ellipse: self.size[0] + self.pos[0] - self.size[1]/2.0, self.pos[1], self.size[1], self.size[1], 360, 540
+
+
+        BoxLayout:
+            size_hint_y: None
+            height: '30sp'
+
+            BoxLayout:
+                size_hint: None, None
+                size_hint: .5, 1
+
+                CancelButton:
+                    id: cancel
+                    source: './data/img/cancel.png'
+
+                    on_release: root.cancel()
+
+            BoxLayout:
+                size_hint: None, None
+                size_hint: .5, 1
+
+            BoxLayout:
+                size_hint: None, None
+                size_hint: .5, 1
+            
+                SaveButton:
+                    id: save_file
+                    source: './data/img/save_2.png'
+                    on_release: root.save(filechooser.path, text_input.text)
+
+
+<ErorrPopup>:
+    BoxLayout:
+        Label:
+            id: label_erorr
+            size_hint_y: None
+            height: '30sp'
+            size_hint_x: None
+            size_hint_x: 30
+            halign: 'center'
+            valign: 'middle'
+
+
+<GoodPopup>:
+    canvas.before:
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source: './data/img/add.png'
+
+
+<ValidateLabel>:
+    id: lll
+    background_color: (1, 0, 0, 1)
+    color: (1,0,0,1)
+    size_hint: (None, None)
+    multiline: True
+
+    Label:
+        id: label
+        text: ''
+        text_size: self.size
+        halign: 'center'
+        valign: 'middle'
+
+
+<Footer>:
+    padding: [0, 0, 0, 0]
+    size_hint: None, None
+    size_hint: 1, 0.05
+
+    canvas:
+        Color:
+            rgb: 0, 0, 1
+        Rectangle:    
+            size: self.size
+            pos: self.pos 
+
+    BoxLayout:
+        size_hint: None, None
+        size_hint: 1,1
+        padding: 2,2,2,0
+        spacing: 2
+
+        AnchorLayout:
+            size_hint: None, None
+            anchor_x: 'left'
+            anchor_y: 'bottom'
+            size_hint_x: 0.5
+            padding: 5,5,5,0
+            spacing: 5
+
+            Label:
+                size_hint: 0.9, 0.7
+                font_size: '8sp'
+                text: "©openrouteservice.org by HeiGIT | Map data © OpenStreetMap contributors"
+                text_size: self.size
+
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_x: 0.4
+
+            AnchorLayout:
+                size_hint_x: None
+                anchor_x: 'right'
+                size_hint_x: 1
+                padding: 5,5,5,0
+                spacing: 5
+
+                Label:
+                    size_hint_x: 1
+                    font_size: '8sp'
+                    text: "©не для комерческого использования"
+
+            AnchorLayout:
+                size_hint_x: None
+                anchor_x: 'right'
+                size_hint_x: 1
+                padding: 5,5,5,0
+                spacing: 5
+
+                Label:
+                    size_hint_x: 0.3
+                    font_size: '11sp'
+                    text: "by @djus"
+
+
+<FirstScreenOne>:
+    name: 'FirstScreenOne'
+    id: FirstScreenOne
+    canvas:
+        Color:
+            rgba: 0, 0, 1, .1
+        Rectangle:    
+            size: self.size
+            pos: self.pos
+
+
+<FirstScreenTwo>:
+    name: 'FirstScreenTwo'
+    id: FirstScreenTwo
+    canvas:
+        Color:
+            rgba: 0, 0, 1, .1
+        Rectangle:    
+            size: self.size
+            pos: self.pos
+
+
+<WidgetBeginOne>:
+    id: WidgetBeginOne
+
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint_y: None
+        size_hint_y: 1
+        padding: 30, 0, 30, 0
+        BoxLayout:
+            size_hint: None, None
+            size_hint: 1, 1
+
+        BoxLayout:
+            id: center_box
+            size_hint: None, None
+            size_hint: 1, 1
+            canvas.before:
+                Color:
+                    rgba: 1, 0, 1, 0,5
+                Ellipse:    
+                    size: self.size
+                    pos: self.pos 
+
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint: 1, 1
+                BoxLayout:
+                    size_hint: 1, 1
+                    Label:
+                        id: home_page
+                        text: ''
+                        text_size: self.size
+                        halign: 'center'
+                        valign: 'middle'
+                        font_size: '13sp'
+
+                BoxLayout:
+                    orientation: 'horizontal'
+                    size_hint: None, None
+                    size_hint: 1, 0.15
+                    padding: 15, 0, 15, 0
+                    spacing: '40sp'
+                    BoxLayout:
+                        size_hint: None, None
+                        size_hint: 1, 1
+                        canvas.before:
+                            Color:
+                                rgba: root.canvas_background_color
+                            Rectangle:
+                                pos: self.pos
+                                size: self.size
+
+                        Button:
+                            id: delete_first_screen
+                            opacity: 0
+                            disabled: True
+                            text: 'Больше не показывать эти сообщения'
+                            font_size: '10sp'
+                            halign: 'center'
+                            valign: 'middle'
+                            text_size: self.size
+                            size_hint: None, None
+                            size_hint: 1, 1
+                            background_color: (0, 0, 0, 0)
+                            on_release: root.parent.add_widget_one(self)
+                            canvas.before:
+                                Color:
+                                    rgba: [1,1,1,1]  # C('#ffffff')           # цвет курсора
+                            canvas.after:
+                                Color:
+                                    rgb: (0, 0, 1, 1)
+                                Ellipse:
+                                    angle_start:180
+                                    angle_end:360
+                                    pos:(self.pos[0] - self.size[1]/2.0, self.pos[1])
+                                    size: (self.size[1], self.size[1])
+                                Ellipse:
+                                    angle_start:360
+                                    angle_end:540
+                                    pos: (self.size[0] + self.pos[0] - self.size[1]/2.0, self.pos[1])
+                                    size: (self.size[1], self.size[1])
+                                Color:
+                                    rgba: (0, 0, 1, 1)
+
+                                Line:
+                                    points: self.pos[0] , self.pos[1], self.pos[0] + self.size[0], self.pos[1]
+                                Line:
+                                    points: self.pos[0], self.pos[1] + self.size[1], self.pos[0] + self.size[0], self.pos[1] + self.size[1]
+                                Line:
+                                    ellipse: self.pos[0] - self.size[1]/2.0, self.pos[1], self.size[1], self.size[1], 180, 360
+                                Line:
+                                    ellipse: self.size[0] + self.pos[0] - self.size[1]/2.0, self.pos[1], self.size[1], self.size[1], 360, 540
+
+                    AnchorLayout:
+                        id: after_button
+                        anchor_x: 'right'
+                        anchor_y: 'bottom'
+                        size_hint: 0.4, 1
+
+                        BoxLayout:
+                            size_hint: None, None
+                            size_hint: 1, 1
+                            canvas.before:
+                                Color:
+                                    rgba: (0, 0, 1, 1)  # внутренний цвет
+                                Rectangle:
+                                    pos: self.pos
+                                    size: self.size
+
+                            Button:
+                                text: 'далее'
+                                background_color: (0, 0, 0, 0)
+                                on_release: root.parent.add_widget_one(self)
+
+                                canvas.before:
+                                    Color:
+                                        rgba: [1,1,1,1]  # C('#ffffff')           # цвет курсора
+                                canvas.after:
+                                    Color:
+                                        rgb: (0, 0, 1, 1)
+                                    Ellipse:
+                                        angle_start:180
+                                        angle_end:360
+                                        pos:(self.pos[0] - self.size[1]/2.0, self.pos[1])
+                                        size: (self.size[1], self.size[1])
+                                    Ellipse:
+                                        angle_start:360
+                                        angle_end:540
+                                        pos: (self.size[0] + self.pos[0] - self.size[1]/2.0, self.pos[1])
+                                        size: (self.size[1], self.size[1])
+                                    Color:
+                                        rgba: (0, 0, 1, 1)
+
+                                    Line:
+                                        points: self.pos[0] , self.pos[1], self.pos[0] + self.size[0], self.pos[1]
+                                    Line:
+                                        points: self.pos[0], self.pos[1] + self.size[1], self.pos[0] + self.size[0], self.pos[1] + self.size[1]
+                                    Line:
+                                        ellipse: self.pos[0] - self.size[1]/2.0, self.pos[1], self.size[1], self.size[1], 180, 360
+                                    Line:
+                                        ellipse: self.size[0] + self.pos[0] - self.size[1]/2.0, self.pos[1], self.size[1], self.size[1], 360, 540
+
+        BoxLayout:
+            size_hint: None, None
+            size_hint: 1, 1
+
+
+<ScrollView>:
+    canvas:
+        Color:
+            rgba: 0, 0, 1, .2
+        Rectangle:    
+            size: self.size
+            pos: self.pos 
+
+
+<FirstScreenFooter>:
+    size_hint: None, None
+    
+    BoxLayout:
+        padding: 5, 0, 5, 3
+        Label:
+            text: '*Долгое нажатие на заполненной дате - позволит ее удалить'
+            font_size: '10sp'
+            text_size: self.size
+            halign: 'left'
